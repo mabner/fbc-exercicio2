@@ -27,5 +27,8 @@ namespace MvcMovie.Models
         [DataType(DataType.Currency)]
         [Required(ErrorMessage = "Obrigatório informar o preço!")]
         public decimal Price { get; set; }
+
+        [Range(0, 10, ErrorMessage = "Sua avaliação deve ser entre 0 e 10")]
+        public string Rating { get; set; }
     }
 }
