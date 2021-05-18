@@ -10,23 +10,22 @@ using MvcMovie.Models;
 
 namespace MvcMovie.Controllers
 {
-    public class MoviesController : Controller
+    public class DiretorsController : Controller
     {
         private readonly MvcMovieContext _context;
 
-        public MoviesController(MvcMovieContext context)
+        public DiretorsController(MvcMovieContext context)
         {
             _context = context;
         }
 
-        // GET: Movies
+        // GET: Diretors
         public async Task<IActionResult> Index()
         {
-            var mvcMovieContext = _context.Movie.Include(m => m.Diretor);
-            return View(await mvcMovieContext.ToListAsync());
+            return View(await _context.Diretor.ToListAsync());
         }
 
-        // GET: Movies/Details/5
+        // GET: Diretors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,42 +33,39 @@ namespace MvcMovie.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie
-                .Include(m => m.Diretor)
+            var diretor = await _context.Diretor
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (movie == null)
+            if (diretor == null)
             {
                 return NotFound();
             }
 
-            return View(movie);
+            return View(diretor);
         }
 
-        // GET: Movies/Create
+        // GET: Diretors/Create
         public IActionResult Create()
         {
-            ViewData["DiretorID"] = new SelectList(_context.Diretor, "ID", "Name");
             return View();
         }
 
-        // POST: Movies/Create
+        // POST: Diretors/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Title,ReleaseDate,Genre,Price,Rating,DiretorID")] Movie movie)
+        public async Task<IActionResult> Create([Bind("ID,Name,BirthDay")] Diretor diretor)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(movie);
+                _context.Add(diretor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DiretorID"] = new SelectList(_context.Diretor, "ID", "Name", movie.DiretorID);
-            return View(movie);
+            return View(diretor);
         }
 
-        // GET: Movies/Edit/5
+        // GET: Diretors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,23 +73,22 @@ namespace MvcMovie.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie.FindAsync(id);
-            if (movie == null)
+            var diretor = await _context.Diretor.FindAsync(id);
+            if (diretor == null)
             {
                 return NotFound();
             }
-            ViewData["DiretorID"] = new SelectList(_context.Diretor, "ID", "Name", movie.DiretorID);
-            return View(movie);
+            return View(diretor);
         }
 
-        // POST: Movies/Edit/5
+        // POST: Diretors/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,ReleaseDate,Genre,Price,Rating,DiretorID")] Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,BirthDay")] Diretor diretor)
         {
-            if (id != movie.ID)
+            if (id != diretor.ID)
             {
                 return NotFound();
             }
@@ -102,12 +97,12 @@ namespace MvcMovie.Controllers
             {
                 try
                 {
-                    _context.Update(movie);
+                    _context.Update(diretor);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MovieExists(movie.ID))
+                    if (!DiretorExists(diretor.ID))
                     {
                         return NotFound();
                     }
@@ -118,11 +113,10 @@ namespace MvcMovie.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DiretorID"] = new SelectList(_context.Diretor, "ID", "Name", movie.DiretorID);
-            return View(movie);
+            return View(diretor);
         }
 
-        // GET: Movies/Delete/5
+        // GET: Diretors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,31 +124,30 @@ namespace MvcMovie.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie
-                .Include(m => m.Diretor)
+            var diretor = await _context.Diretor
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (movie == null)
+            if (diretor == null)
             {
                 return NotFound();
             }
 
-            return View(movie);
+            return View(diretor);
         }
 
-        // POST: Movies/Delete/5
+        // POST: Diretors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movie = await _context.Movie.FindAsync(id);
-            _context.Movie.Remove(movie);
+            var diretor = await _context.Diretor.FindAsync(id);
+            _context.Diretor.Remove(diretor);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MovieExists(int id)
+        private bool DiretorExists(int id)
         {
-            return _context.Movie.Any(e => e.ID == id);
+            return _context.Diretor.Any(e => e.ID == id);
         }
     }
 }
